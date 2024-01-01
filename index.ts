@@ -36,6 +36,11 @@ app
   })
   .post(async (req: Request, res: Response) => {
     const { todo } = req.body;
+    const valid = validate(todo);
+    if (!valid.success) {
+      res.status(400).json("Wrong Types");
+      return;
+    }
     const todoInstance = new Todo(todo);
     await todoInstance.save();
     res.status(201).json(`Todo created`);
