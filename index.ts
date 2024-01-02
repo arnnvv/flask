@@ -1,11 +1,16 @@
 import express, { Request, Response } from "express";
 import zod from "zod";
 import mongoose from "mongoose";
-
+import cors from "cors";
 const app = express();
 const port: number = 3000;
 
 app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  }),
+);
 
 mongoose.connect(
   "mongodb+srv://arnav:arnavsharma1A@cluster0.n9borfi.mongodb.net/flstk",

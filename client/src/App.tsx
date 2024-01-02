@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
@@ -17,6 +17,19 @@ function App() {
     const [newTodo, setNewTodo] = useState({
       title: "",
       description: "",
+    });
+
+    useEffect(() => {
+      async function getData() {
+        try {
+          const data = await fetch("http://localhost:3000");
+          const resData = await data.json();
+          setTodos(resData);
+        } catch (e) {
+          console.error(`Error in fetching data ${e}`);
+        }
+      }
+      getData();
     });
 
     const addTodo = () => {
