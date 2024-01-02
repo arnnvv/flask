@@ -55,10 +55,15 @@ function App() {
         />
         <button
           onClick={async () => {
-            await axios.post("http://localhost:3000/todos", {
-              title: newTodo.title,
-              description: newTodo.description,
-            });
+            try {
+              await axios.post("http://localhost:3000/todos", {
+                title: newTodo.title,
+                description: newTodo.description,
+              });
+              console.log(`Todo created`);
+            } catch (e) {
+              console.error(`Error in sending data ${e}`);
+            }
           }}
           className="bg-green-500 text-white py-2 px-4 rounded cursor-pointer"
         >

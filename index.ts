@@ -36,27 +36,30 @@ app.get("/", (req: Request, res: Response) => {
 app
   .route("/todos")
   .get(async (req: Request, res: Response) => {
-    const todos = await Todo.find();
-    res.status(200).json(`Todos: ${todos}`);
+    try {
+      const todos = await Todo.find();
+      res.status(200).json(todos);
+    } catch (e) {
+      console.error(`Error in fetching DB ${e}`);
+      res.status(500).json("Internal Server Error");
+    }
   })
   .post(async (req: Request, res: Response) => {
-    const { todo } = req.body;
-    const isvalid = validate(todo);
-    if (!isvalid.success) {
+    const { title, description } = req.body;
+    const isValid = validate({ title, description });
+    if (!isValid.success) {
       res.status(404).json("Wrong Input");
       return;
     }
-    const todoInstance = new Todo(todo);
-    todoInstance.save();
-    res.status(200).json(`Todo Created`);
+    const todoInstance = new Todo({ title, description });
+    try {
+      await todoInstance.save();
+      res.status(201).json(`Todo Created`);
+    } catch (e) {
+      console.error(`Error in saving Todo ${e}`);
+      res.status(500).json("Internal Server Error");
+    }
   });
-
-//const todo = new Todo({
-// title: "GYM AGAIN",
-//  description: "Go to GYM again",
-//});
-
-//todo.save();
 
 app.listen(port, () => {
   console.log(`App listning on port ${port}`);
