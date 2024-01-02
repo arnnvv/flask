@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import axios from "axios";
 
 function App() {
   function Todos() {
@@ -20,21 +21,19 @@ function App() {
     });
 
     useEffect(() => {
-      async function getData() {
+      (async () => {
         try {
-          const data = await fetch("http://localhost:3000");
-          const resData = await data.json();
-          setTodos(resData);
+          const response = await axios.get("http://localhost:3000/todos");
+          setTodos(response.data);
         } catch (e) {
           console.error(`Error in fetching data ${e}`);
         }
-      }
-      getData();
-    });
+      })();
+    }, []);
 
-    const addTodo = () => {
-      setTodos((prevtodo) => [...prevtodo, newTodo]);
-    };
+    //const addTodo = () => {
+    //  setTodos((prevtodo) => [...prevtodo, newTodo]);
+    //};
 
     return (
       <div id="todo-form">
@@ -55,7 +54,12 @@ function App() {
           className="w-full p-2 mb-4 border border-gray-300 rounded"
         />
         <button
-          onClick={addTodo}
+          onClick={async () => {
+            await axios.post("http://localhost:3000/todos", {
+              title: newTodo.title,
+              description: newTodo.description,
+            });
+          }}
           className="bg-green-500 text-white py-2 px-4 rounded cursor-pointer"
         >
           Add Todo
